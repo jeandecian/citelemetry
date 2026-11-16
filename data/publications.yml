@@ -1,0 +1,42 @@
+updated_at: "2026-11-15"
+publications:
+  - title: "Dynamic RAG with hybrid retrieval: A novel approach to robust LLMs and hallucination prevention"
+    venue: Neurocomputing, 134911
+    year: 2026
+    link: https://doi.org/10.1016/j.neucom.2026.134911
+    citations_by_year:
+      2026: 1
+
+  - title: "L'impact environnemental des cyberattaques : étude de la sollicitation des ressources système et de la consommation énergétique"
+    venue: Université du Québec à Chicoutimi
+    year: 2026
+    link: https://constellation.uqac.ca/id/eprint/10491/
+    citations_by_year: {}
+
+  - title: Cyberattacks Are a Major Source of Global Carbon Emissions
+    venue: IEEE Access 14, 9897-9916
+    year: 2026
+    link: https://www.doi.org/10.1109/ACCESS.2026.3655210
+    citations_by_year:
+      2026: 1
+
+  - title: "Estimating the Carbon Footprint of Cyberattacks: The Ransomware Case"
+    venue: International Conference on Safe, Secure, Ethical, Responsible Technologies and Emerging Applications
+    year: 2025
+    link: https://www.doi.org/10.1007/978-3-032-05832-4_3
+    citations_by_year:
+      2026: 3
+
+  - title: "Wiki-IoT: Registering and Evaluating the Security and Resilience of Internet of Things and Connected Devices Using a Collaborative Platform"
+    venue: 2024 IEEE Conference on Dependable, Autonomic and Secure Computing (DASC), 9-14
+    year: 2024
+    link: https://www.doi.org/10.1109/DASC64200.2024.00008
+    citations_by_year:
+      2025: 1
+      2026: 1
+
+  - title: Social Network Cyberattacks and Security Issues
+    venue: MÉDIAS SOCIAUX, 11
+    year: 2021
+    link: https://www.pulaval.com/livres/medias-sociaux-perspectives-sur-les-defis-lies-a-la-cybersecurite-la-gouvernementalite-algorithmique-et-l-intelligence-artificielle
+    citations_by_year: {}
