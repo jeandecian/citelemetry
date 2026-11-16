@@ -21,6 +21,59 @@
         <p id="last-updated" class="text-xs text-gray-400 font-mono"></p>
       </header>
 
+      <div
+        class="grid grid-cols-2 sm:grid-cols-4 border border-gray-200 rounded-lg divide-y sm:divide-y-0 sm:divide-x divide-gray-200 mb-8"
+      >
+        <div class="p-4">
+          <span
+            class="text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >Citations</span
+          >
+          <p
+            id="kpi-citations"
+            class="text-2xl font-semibold font-mono text-gray-900 mt-1"
+          >
+            —
+          </p>
+        </div>
+        <div class="p-4">
+          <span
+            class="text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >h-index</span
+          >
+          <p
+            id="kpi-hindex"
+            class="text-2xl font-semibold font-mono text-gray-900 mt-1"
+          >
+            —
+          </p>
+        </div>
+        <div class="p-4">
+          <span
+            class="text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >i10-index</span
+          >
+          <p
+            id="kpi-i10"
+            class="text-2xl font-semibold font-mono text-gray-900 mt-1"
+          >
+            —
+          </p>
+        </div>
+        <div class="p-4">
+          <span
+            class="text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >Publications</span
+          >
+          <p
+            id="kpi-papers"
+            class="text-2xl font-semibold font-mono text-gray-900 mt-1"
+          >
+            —
+          </p>
+        </div>
+      </div>
+
       <div class="overflow-x-auto border border-gray-200 rounded-lg">
         <table
           id="matrix-table"
@@ -49,6 +102,8 @@
         const years = Array.from(yearSet).sort((a, b) => a - b);
 
         let totalCitations = 0;
+        const paperTotals = [];
+
         data.publications.forEach((pub) => {
           let sum = 0;
           if (pub.citations_by_year) {
@@ -56,7 +111,21 @@
           }
           pub._total = sum;
           totalCitations += sum;
+          paperTotals.push(sum);
         });
+
+        paperTotals.sort((a, b) => b - a);
+        let hIndex = 0;
+        paperTotals.forEach((cites, idx) => {
+          if (cites >= idx + 1) hIndex = idx + 1;
+        });
+        const i10Index = paperTotals.filter((c) => c >= 10).length;
+
+        document.getElementById("kpi-citations").textContent = totalCitations;
+        document.getElementById("kpi-hindex").textContent = hIndex;
+        document.getElementById("kpi-i10").textContent = i10Index;
+        document.getElementById("kpi-papers").textContent =
+          data.publications.length;
 
         const table = document.getElementById("matrix-table");
 
