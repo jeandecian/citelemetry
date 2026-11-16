@@ -4,6 +4,130 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Citelemetry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   </head>
-  <body></body>
+  <body class="bg-white text-gray-900 font-sans antialiased">
+    <div class="max-w-5xl mx-auto px-6 py-12">
+      <header
+        class="border-b border-gray-200 pb-4 mb-8 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2"
+      >
+        <div>
+          <h1 class="text-2xl font-semibold tracking-tight">Citelemetry</h1>
+          <p class="text-gray-500 text-sm mt-0.5">
+            Citation evolution per year
+          </p>
+        </div>
+        <p id="last-updated" class="text-xs text-gray-400 font-mono"></p>
+      </header>
+
+      <div class="overflow-x-auto border border-gray-200 rounded-lg">
+        <table
+          id="matrix-table"
+          class="w-full text-left border-collapse text-sm"
+        ></table>
+      </div>
+    </div>
+
+    <script>
+      async function init() {
+        const res = await fetch("./data/publications.yml");
+        const yamlText = await res.text();
+        const data = jsyaml.load(yamlText);
+
+        document.getElementById("last-updated").textContent =
+          `Updated: ${data.updated_at}`;
+
+        const yearSet = new Set();
+        data.publications.forEach((pub) => {
+          if (pub.citations_by_year) {
+            Object.keys(pub.citations_by_year).forEach((y) =>
+              yearSet.add(Number(y)),
+            );
+          }
+        });
+        const years = Array.from(yearSet).sort((a, b) => a - b);
+
+        let totalCitations = 0;
+        data.publications.forEach((pub) => {
+          let sum = 0;
+          if (pub.citations_by_year) {
+            Object.values(pub.citations_by_year).forEach((c) => (sum += c));
+          }
+          pub._total = sum;
+          totalCitations += sum;
+        });
+
+        const table = document.getElementById("matrix-table");
+
+        let theadHTML = `
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <th class="py-3 px-4">Publication</th>
+      `;
+        years.forEach((y) => {
+          theadHTML += `<th class="py-3 px-3 text-center font-mono">${y}</th>`;
+        });
+        theadHTML += `
+            <th class="py-3 px-4 text-right">Total</th>
+          </tr>
+        </thead>
+      `;
+
+        let tbodyHTML = `<tbody class="divide-y divide-gray-200">`;
+
+        data.publications.forEach((pub) => {
+          tbodyHTML += `
+          <tr class="hover:bg-gray-50/50">
+            <td class="py-3 px-4">
+              <a href="${pub.link || "#"}" target="_blank" class="font-medium text-blue-600 hover:underline block">
+                ${pub.title}
+              </a>
+              <p class="text-xs text-gray-500 mt-0.5">${pub.authors || ""} • <span class="text-gray-400">${pub.venue} (${pub.year})</span></p>
+            </td>
+        `;
+
+          years.forEach((y) => {
+            const count =
+              pub.citations_by_year && pub.citations_by_year[y] !== undefined
+                ? pub.citations_by_year[y]
+                : 0;
+            const cellStyle =
+              count > 0 ? "text-gray-900 font-medium" : "text-gray-300";
+            tbodyHTML += `<td class="py-3 px-3 text-center font-mono ${cellStyle}">${count > 0 ? count : "—"}</td>`;
+          });
+
+          tbodyHTML += `
+            <td class="py-3 px-4 text-right font-mono font-semibold text-gray-900">
+              ${pub._total}
+            </td>
+          </tr>
+        `;
+        });
+
+        tbodyHTML += `
+          <tr class="bg-gray-50 font-semibold border-t border-gray-200">
+            <td class="py-3 px-4 text-gray-700 text-xs uppercase tracking-wider">Total</td>
+      `;
+        years.forEach((y) => {
+          let yearSum = 0;
+          data.publications.forEach((pub) => {
+            if (pub.citations_by_year && pub.citations_by_year[y]) {
+              yearSum += pub.citations_by_year[y];
+            }
+          });
+          tbodyHTML += `<td class="py-3 px-3 text-center font-mono text-gray-900">${yearSum}</td>`;
+        });
+        tbodyHTML += `
+            <td class="py-3 px-4 text-right font-mono text-gray-900">${totalCitations}</td>
+          </tr>
+        </tbody>
+      `;
+
+        table.innerHTML = theadHTML + tbodyHTML;
+      }
+
+      init();
+    </script>
+  </body>
 </html>
